@@ -1,5 +1,7 @@
 import os
-import playsound
+from pygame import mixer
+
+
 class MusicPlayer:
     def __init__(self):
         self.musicas_diretorio = list()
@@ -33,21 +35,51 @@ class Usuario:
         else:
             print('Nenhuma música encontrada! :(')
 
-    def reproduzir(self, numero=''):
-        if numero.isnumeric():
-            numero = int(numero)
-
-            if numero <= len(self.musicas_achadas):
-                playsound.playsound(self.musicas.diretorio+'/'+self.musicas_achadas[numero])
+    def reproduzir(self, msg):
+        ok = False
+        numero = ()
+        while True:
+            n = input(msg)
+            if n.isnumeric():
+                numero = int(n)
+                ok = True
             else:
-                print('nada digitado!')
+                print('Digite um numero inteiro valido!')
+
+            if ok:
+                break
+
+        mixer.init()
+        if len(self.musicas_achadas) > 0:
+
+            mixer.music.load(self.musicas.diretorio+'/'+self.musicas_achadas[numero])
+
+        elif len(self.musicas_achadas) == len(self.musicas.musicas_diretorio):
+            mixer.music.load(self.musicas.diretorio + '/' + self.musicas.musicas_diretorio[numero])
+
+        elif numero > len(self.musicas_achadas) and numero <= len(self.musicas.musicas_diretorio):
+            mixer.music.load(self.musicas.diretorio + '/' + self.musicas.musicas_diretorio[numero])
+
+        else:
+            print('Opção invalida')
+
+        mixer.music.play()
+        while mixer.music.get_busy(): pass
+
+
+    def voltar(self):
+        self.musicas_achadas.clear()
+
 
 #main test
 a = MusicPlayer()
 u = Usuario(a)
-a.buscar_no_diretorio(r'C:\Users\edilm\Documents\MEGAsync Downloads\backup\Whatlisten') #esse metodo recebe o diretorio onde o usuario quer pegar as musicas
-#u.mostrar()
+a.buscar_no_diretorio(r'diretorio') #esse metodo recebe o diretorio onde o usuario quer pegar as musicas
+
 procurar = input('Digite uma palavra para pesquisar')
+
 u.procurar(procurar)
-reproduzir = input('Digite o numero que quer reproduzir')
-u.reproduzir(reproduzir)
+#u.voltar()
+#u.mostrar()
+u.reproduzir('Digite o numero que quer reproduzir')
+
