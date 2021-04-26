@@ -1,7 +1,6 @@
 import os
 from pygame import mixer
 
-
 class MusicPlayer:
     def __init__(self):
         self.musicas_diretorio = list()
@@ -9,10 +8,17 @@ class MusicPlayer:
 
     def buscar_no_diretorio(self, diretorio):
         self.diretorio = diretorio
-        for raiz, diretorio, arquivos in os.walk(diretorio):
-            for arquivo in arquivos:
-                if arquivo[-4:] == '.mp3':
-                    self.musicas_diretorio.append(arquivo)
+        try:
+            for raiz, diretorio, arquivos in os.walk(diretorio):
+                for arquivo in arquivos:
+                    if arquivo[-4:] == '.mp3':
+                        self.musicas_diretorio.append(arquivo)
+        except Exception:
+            print('Erro desconhecido! tente ver se esta tudo certo com o diretorio! ')
+
+    def tela(self, opção):
+        while True:
+            opç = input()
 
 class Usuario:
     def __init__(self, classe_musica):
@@ -35,6 +41,8 @@ class Usuario:
         else:
             print('Nenhuma música encontrada! :(')
 
+
+
     def reproduzir(self, msg):
         ok = False
         numero = ()
@@ -48,35 +56,59 @@ class Usuario:
 
             if ok:
                 break
+        try:
+            mixer.init()
+            if len(self.musicas_achadas) > 0:
 
-        mixer.init()
-        if len(self.musicas_achadas) > 0:
+                mixer.music.load(self.musicas.diretorio+'/'+self.musicas_achadas[numero])
 
-            mixer.music.load(self.musicas.diretorio+'/'+self.musicas_achadas[numero])
+            elif len(self.musicas_achadas) == len(self.musicas.musicas_diretorio):
+                mixer.music.load(self.musicas.diretorio + '/' + self.musicas.musicas_diretorio[numero])
 
-        elif len(self.musicas_achadas) == len(self.musicas.musicas_diretorio):
-            mixer.music.load(self.musicas.diretorio + '/' + self.musicas.musicas_diretorio[numero])
+            elif numero > len(self.musicas_achadas) and numero <= len(self.musicas.musicas_diretorio):
+                mixer.music.load(self.musicas.diretorio + '/' + self.musicas.musicas_diretorio[numero])
 
-        elif numero > len(self.musicas_achadas) and numero <= len(self.musicas.musicas_diretorio):
-            mixer.music.load(self.musicas.diretorio + '/' + self.musicas.musicas_diretorio[numero])
+            else:
+                print('Opção invalida')
 
-        else:
-            print('Opção invalida')
+            mixer.music.play()
+            cont = 0
 
-        mixer.music.play()
-        while mixer.music.get_busy(): pass
+            while mixer.music.get_busy():
+                print()
+                if cont == 0 and len(self.musicas_achadas) >= 1:
+                    print('Tocando agora... {}'.format(self.musicas_achadas[numero]))
+                    cont += 1
+
+                t = input('[P]Pause||  [R]Retomar↻   [S]Stop▣ ').lower()
+
+
+                if t == 'p':
+                    mixer.music.pause()
+                    print('Música pausada!')
+
+                elif t == 'r':
+                    mixer.music.unpause()
+                    print('Música retomada!')
+                    print('Tocando... {}'.format(self.musicas_achadas[numero]))
+
+
+                elif t == 's':
+                    mixer.music.stop()
+
+        except Exception:
+               print('Erro! Talvez não há nada na pasta ou esta é uma opção inválida')
 
 
     def voltar(self):
         self.musicas_achadas.clear()
 
-
 #main test
 a = MusicPlayer()
 u = Usuario(a)
-a.buscar_no_diretorio(r'diretorio') #esse metodo recebe o diretorio onde o usuario quer pegar as musicas
+a.buscar_no_diretorio(r'diretorio completo...') #esse metodo recebe o diretorio onde o usuario quer pegar as musicas
 
-procurar = input('Digite uma palavra para pesquisar')
+procurar = input('Digite uma palavra para pesquisar ou enter para ver todas as musicas')
 
 u.procurar(procurar)
 #u.voltar()
