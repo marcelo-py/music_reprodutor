@@ -1,6 +1,12 @@
 import os
 from pygame import mixer
 
+'''BY:0M      O00111
+   000  A1   L1  000
+   100    RCE    000
+   110           001   
+   '''
+
 class MusicPlayer:
     def __init__(self):
         self.musicas_diretorio = list()
@@ -75,13 +81,13 @@ class Usuario:
             cont = 0
 
             while mixer.music.get_busy():
+
                 print()
                 if cont == 0 and len(self.musicas_achadas) >= 1:
                     print('Tocando agora... {}'.format(self.musicas_achadas[numero]))
                     cont += 1
 
                 t = input('[P]Pause||  [R]Retomar↻   [S]Stop▣ ').lower()
-
 
                 if t == 'p':
                     mixer.music.pause()
@@ -95,7 +101,7 @@ class Usuario:
 
                 elif t == 's':
                     mixer.music.stop()
-
+            cont -1
         except Exception:
                print('Erro! Talvez não há nada na pasta ou esta é uma opção inválida')
 
@@ -103,15 +109,8 @@ class Usuario:
     def voltar(self):
         self.musicas_achadas.clear()
 
-#main test
-a = MusicPlayer()
-u = Usuario(a)
-a.buscar_no_diretorio(r'diretorio completo...') #esse metodo recebe o diretorio onde o usuario quer pegar as musicas
-
-procurar = input('Digite uma palavra para pesquisar ou enter para ver todas as musicas')
-
-u.procurar(procurar)
-#u.voltar()
-#u.mostrar()
-u.reproduzir('Digite o numero que quer reproduzir')
-
+'''BY:0M      O00111
+   000  A1   L1  000
+   100    RCE    000
+   110           001   
+   '''
